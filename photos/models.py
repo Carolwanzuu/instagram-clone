@@ -22,7 +22,7 @@ class Profile(models.Model):
 #     image_name = models.CharField(max_length=100)
 #     image_caption = models.TextField(max_length=300)
 #     created_on = models.DateTimeField(auto_now_add=True)
-#     last_modified = models.DateTimeField(auto_now=True)
+#     last_modified = models.DateTimeField(auto_now_add=True)
 #     author = models.ForeignKey(User, on_delete=models.CASCADE)
 #     likes = models.IntegerField(null=True, default=0)
 
@@ -37,3 +37,7 @@ class Profile(models.Model):
 
 #     def __str__(self):
 #         return self.post
+
+class photosRecipients(models.Model):
+    name = models.CharField(max_length = 30)
+    email = models.EmailField()
