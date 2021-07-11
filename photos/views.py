@@ -1,31 +1,79 @@
-from photos.models import Image, Profile
+from photos.models import Image, Profile, Comment
 from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.models import User
-from .forms import SignInForm
+from django.views.decorators.csrf import csrf_protect
+from .forms import SignInForm,PostForm,CommentForm
 from .models import Image, Profile
-from django.contrib.auth.decorators import login_required.
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 
-def welcome(request):
-  return render(request,'home.html')
+def home(request):
+    post = Image.objects.all().order_by('-last_modified')
 
-def register(request):
-  if request.method == 'POST':
-    form = SignInForm(request.POST)
-    if form.is_valid():
-            form.save()
+    context={
+        'posts' : post,
+    }
 
-            for user in User.objects.all():
-                 Profile.objects.get_or_create(user=user)
+    return render(request, 'home.html',context)
 
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your Accout has been created for {username}! You can now log in.')
-            return redirect('login')
+
+def about(request):
+    return render(request, 'about.html', {'title': 'About'})
+
+@login_required
+@csrf_protect
+def add_post(request):
+    form = PostForm(request.POST,request.FILES)
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES)
+        if form.is_valid():
+            post = Image(
+                image = form.cleaned_data["image"],
+                name = form.cleaned_data["name"],
+                caption = form.cleaned_data["caption"],
+                author = request.user
+            )
+            
+            post.save()
+
+            post_name = form.cleaned_data.get('name')
+            messages.success(request, f'Your post has been created for {post_name} !')
+            return redirect('home')
     else:
-        form = SignInForm()
-    return render(request, 'register.html', {'form':form})
+        form = PostForm()
 
+    return render(request, 'addPost.html',{'form': form})
 
-@login_required(login_url='/accounts/login/')
+@login_required
+@csrf_protect
+def post_detail(request, pk):
+    post = Image.objects.get(pk=pk)
+    user = request.user
+    form = CommentForm()
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment(
+                author= user,
+                body=form.cleaned_data["body"],
+                post=post
+            )
+            comment.save()
+
+    comments = Comment.objects.filter(post=post).order_by('-created_on')
+    context = {
+        "post": post,
+        "comments": comments,
+        "form": form,
+    }
+
+    return render(request, "new_detail.html", context)
+
+@login_required
+def like(request, pk):
+    post = Image.objects.get(pk=pk)
+    post.likes+=1
+    post.save()
+    return redirect('home')

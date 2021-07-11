@@ -7,6 +7,7 @@ class Image(models.Model):
     name=models.CharField(max_length=100)
     caption=models.TextField()
     profile= models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes=models.IntegerField(null=True, default=0)
     comments=()
 
@@ -29,14 +30,14 @@ class Profile(models.Model):
 #     def __str__(self):
 #         return self.image_name
 
-# class Comment(models.Model):
-#     body = models.TextField()
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     post = models.ForeignKey('Post', on_delete=models.CASCADE)
-#     author = models.ForeignKey(User, on_delete=models.CASCADE)
+class Comment(models.Model):
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-#     def __str__(self):
-#         return self.post
+    def __str__(self):
+        return self.post
 
 class photosRecipients(models.Model):
     name = models.CharField(max_length = 30)
