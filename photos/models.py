@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # # Create your models here
 class Image(models.Model):
     image=models.ImageField(upload_to='profile_pics')
-    name=models.CharField(max_length=100)
+    name=models.CharField(max_length=10)
     caption=models.TextField()
     profile= models.ForeignKey(User, on_delete=models.CASCADE)
     # author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,5 +40,5 @@ class Comment(models.Model):
         return self.post
 
 class photosRecipients(models.Model):
-    name = models.CharField(max_length = 30)
+    name = models.CharField(max_length = 10)
     email = models.EmailField()
