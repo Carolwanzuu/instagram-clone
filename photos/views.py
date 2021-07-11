@@ -8,9 +8,17 @@ from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+def registerPage(request):
+    context = {}
+    return render(request,'registration/registration_form.html', context)
+
+def loginPage(request):
+    context = {}
+    return render(request,'registration/login.html', context)
+
 
 def home(request):
-    post = Image.objects.all().order_by('-last_modified')
+    post = Image.objects.all()
 
     context={
         'posts' : post,
@@ -38,8 +46,8 @@ def add_post(request):
             
             post.save()
 
-            post_name = form.cleaned_data.get('name')
-            messages.success(request, f'Your post has been created for {post_name} !')
+            name = form.cleaned_data.get('name')
+            messages.success(request, f'Your post has been created for {name} !')
             return redirect('home')
     else:
         form = PostForm()
@@ -69,7 +77,7 @@ def post_detail(request, pk):
         "form": form,
     }
 
-    return render(request, "new_detail.html", context)
+    return render(request, "addPost.html", context)
 
 @login_required
 def like(request, pk):
