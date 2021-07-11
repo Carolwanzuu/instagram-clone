@@ -12,19 +12,22 @@
 
         {% endblock title %}
     </title>
-    <link rel="stylesheet" href="{% static 'style.css' %} ">
+    <!-- <link rel="stylesheet" href="{% static 'style.css' %} "> -->
     {% block others %}
 
     {% endblock others %}
     {% block styles %}
     {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     {% endblock %}
 
 </head>
 
 <body class='bg-black text-gray-100 font-primary'>
+    {% include "navbar.html" %}
 
     {% block content %}
+    <h1 class='text-center'>Netflix Clone</h1> 
 
     {% endblock content %}
 
