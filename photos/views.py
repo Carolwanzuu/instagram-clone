@@ -3,9 +3,11 @@ from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.models import User
 from .forms import SignInForm
 from .models import Image, Profile
+from django.contrib.auth.decorators import login_required.
 
 
 # Create your views here.
+
 def welcome(request):
   return render(request,'home.html')
 
@@ -25,3 +27,5 @@ def register(request):
         form = SignInForm()
     return render(request, 'register.html', {'form':form})
 
+
+@login_required(login_url='/accounts/login/')
